@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OG Image Generator — Tasfia Mahmud</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #f0f0f0;
+      font-family: 'Outfit', sans-serif;
+      padding: 40px;
+    }
+    h1 { font-family: 'Outfit', sans-serif; font-weight: 400; font-size: 1.2rem; margin-bottom: 16px; color: #333; }
+    p.instructions { max-width: 600px; text-align: center; color: #666; font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px; }
+    .btn {
+      padding: 12px 32px;
+      background: #2C2C2C;
+      color: #FAFAF8;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      margin-bottom: 40px;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.8; }
+    .preview {
+      border: 1px solid #ddd;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+
+    /* --- The OG Image itself (1200x630) --- */
+    .og-card {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      background: #FAFAF8;
+    }
+
+    .og-card__bg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .og-card__bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .og-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(250, 250, 248, 0.92) 0%,
+        rgba(250, 250, 248, 0.75) 50%,
+        rgba(250, 250, 248, 0.60) 100%
+      );
+    }
+
+    /* Decorative pastel orbs */
+    .og-card__orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .og-card__orb--1 {
+      width: 400px;
+      height: 400px;
+      background: #E8C4C4;
+      opacity: 0.5;
+      top: -120px;
+      right: -60px;
+    }
+
+    .og-card__orb--2 {
+      width: 300px;
+      height: 300px;
+      background: #C4B7D4;
+      opacity: 0.4;
+      bottom: -80px;
+      left: -40px;
+    }
+
+    .og-card__orb--3 {
+      width: 250px;
+      height: 250px;
+      background: #B7C4A8;
+      opacity: 0.3;
+      bottom: 60px;
+      right: 200px;
+    }
+
+    .og-card__content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 100px;
+    }
+
+    .og-card__name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 82px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      line-height: 1.05;
+      color: #2C2C2C;
+      margin-bottom: 16px;
+    }
+
+    .og-card__tagline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 28px;
+      font-weight: 300;
+      color: #6B6B6B;
+      letter-spacing: 0.03em;
+      margin-bottom: 40px;
+    }
+
+    .og-card__divider {
+      width: 64px;
+      height: 2px;
+      background: linear-gradient(to right, #E8C4C4, #C4B7D4);
+      margin-bottom: 28px;
+    }
+
+    .og-card__url {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    /* Artwork thumbnails strip on the right */
+    .og-card__art-strip {
+      position: absolute;
+      right: 80px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 1;
+    }
+
+    .og-card__art-thumb {
+      width: 140px;
+      height: 105px;
+      border-radius: 4px;
+      object-fit: cover;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .og-card__art-thumb:nth-child(1) { transform: translateX(20px); }
+    .og-card__art-thumb:nth-child(3) { transform: translateX(20px); }
+  </style>
+</head>
+<body>
+  <h1>Social Share Banner Generator</h1>
+  <p class="instructions">
+    This page generates the 1200&times;630 Open Graph image for semonti.art.<br>
+    Click the button below to download it as PNG — then place it at <code>assets/og-image.png</code>.
+  </p>
+  <button class="btn" onclick="downloadImage()">Download as PNG</button>
+
+  <div class="preview">
+    <div class="og-card" id="ogCard">
+      <div class="og-card__bg">
+        <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=1200&q=80" alt="" crossorigin="anonymous">
+      </div>
+      <div class="og-card__overlay"></div>
+      <div class="og-card__orb og-card__orb--1"></div>
+      <div class="og-card__orb og-card__orb--2"></div>
+      <div class="og-card__orb og-card__orb--3"></div>
+
+      <div class="og-card__art-strip">
+        <img class="og-card__art-thumb" src="https://images.unsplash.com/photo-1549490349-8643362247b5?w=300&q=80" alt="" crossorigin="anonymous">
+        <img class="og-card__art-thumb" src="https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=300&q=80" alt="" crossorigin="anonymous">
+        <img class="og-card__art-thumb" src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&q=80" alt="" crossorigin="anonymous">
+      </div>
+
+      <div class="og-card__content">
+        <div class="og-card__name">Tasfia Mahmud</div>
+        <div class="og-card__tagline">Exploring texture, color & emotion</div>
+        <div class="og-card__divider"></div>
+        <div class="og-card__url">semonti.art</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function downloadImage() {
+      const card = document.getElementById('ogCard');
+
+      // Use html2canvas from CDN
+      if (!window.html2canvas) {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        document.head.appendChild(script);
+        await new Promise(resolve => script.onload = resolve);
+      }
+
+      const canvas = await html2canvas(card, {
+        width: 1200,
+        height: 630,
+        scale: 1,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#FAFAF8'
+      });
+
+      const link = document.createElement('a');
+      link.download = 'og-image.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
